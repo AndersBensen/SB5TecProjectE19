@@ -1,10 +1,10 @@
 const {Server} = require('ws');
-/* var exports = module.exports = {}; */
+var exports = module.exports = {};
 
 let servers = [];
 
 
-module.exports.newServer = function() {
+exports.newServer = function() {
     let id = 'asdf';
     let wsServer = new Server({port: 7000, path: '/' + id});
     servers.push(wsServer);
