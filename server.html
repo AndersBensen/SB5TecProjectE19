@@ -8,13 +8,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Blob Attack</title>
 
-    <script>
+    <!-- <script>
         let startServer = function() {
             $.get('localhost:8000/new-server', (data) => {
             console.log(data);
         });
     };
-    </script>
+    </script> -->
 
 </head>
 
@@ -22,7 +22,10 @@
 
     <h1>Blob Attack</h1>
     <p>hej</p>
-    <button onclick="startServer()">new server</button>
+    <!-- <button onclick="startServer()">new server</button> -->
+    <form method="get" action="/new-server">
+        <input type="submit">
+    </form>
 
 </body>
 
