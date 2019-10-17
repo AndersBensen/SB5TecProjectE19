@@ -6,9 +6,9 @@ const path = require('path');
 const app = express();
 const port = 8000;
 
-app.use(cors({
-    origin: '127.0.0.1'
-}));
+/* app.use(cors({
+    origin: '*'
+})); */
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/server.html'));
@@ -16,9 +16,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/new-server', (req, res) => {
+    /* res.writeHead(200, {'Access-Control-Allow-Origin': '*'}); */
     wsServer.newServer();
-    res.header('Access-Control-Allow-Origin', '*');
-
 });
 
 app.listen(port, () => {
