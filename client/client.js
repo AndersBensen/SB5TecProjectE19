@@ -6,10 +6,11 @@ let canvas;
 let establishConnection = function () {
     if (connected) return;
 
+    let url = document.getElementById("inputUrl").value
     let id = document.getElementById("inputID").value;
     console.log(id);
     
-    ws = new WebSocket("ws://localhost:7000/" + id);
+    ws = new WebSocket("ws://" + url + ":7000/" + id);
     ws.onopen = () => {
         name = document.getElementById("inputName").value;
         ws.send(JSON.stringify({name}));
