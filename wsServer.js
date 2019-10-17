@@ -1,8 +1,30 @@
 const {Server} = require('ws');
+const game = require('./game.js');
 var exports = module.exports = {};
 
 let servers = [];
 
+
+
+let clientUpdate = (data) => {
+    data = JSON.parse(data);
+    console.log(data);
+    if (data.name !== undefined) {
+        if (data.keydown !== undefined) {
+
+        } else {
+            game.addPlayer(data.name);
+        }
+    }
+    
+}
+
+let sendData = (gameData) => {
+    // console.log(servers);
+    
+    servers[0].clients.forEach(c => c.send(JSON.stringify(gameData)));
+    // servers[0].client.send(JSON.stringify(gameData));
+}
 
 exports.newServer = function() {
     let id = 'asdf';
@@ -14,19 +36,16 @@ exports.newServer = function() {
         console.log(id);
         ws.on('close', () => console.log('Closing connection..'));
 
-        wsServer.on('message', (data) => {
-            console.log(data);
-            console.log("anything");
-            
-            
+        ws.on('message', (data) => {
+            clientUpdate(data);
         });
-        wsServer.on('keydown', (data) => {
+        ws.on('keydown', (data) => {
             console.log(data);
             
         });
     });
 
-    
+    game.start(sendData);
 
     console.log('New server socket');
 }
