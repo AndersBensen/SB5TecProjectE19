@@ -9,6 +9,7 @@ exports.newServer = function() {
     let wsServer = new Server({port: 7000, path: '/' + id});
     servers.push(wsServer);
     console.log('new server called');
+    console.log(servers["options"["path"]]); 
 }
 /* 
 wsServer.on('connection', ws => {
