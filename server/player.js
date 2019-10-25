@@ -1,16 +1,18 @@
 var exports = module.exports = {};
 
 exports.Player = class Player {
-    constructor (name, x, y, speed, angleSpeed, angle, color) {
+    constructor (name, x, y, speed, angleSpeed, angle, size, color) {
         this.name = name;
         this.x = x;
         this.y = y;
         this.speed = speed;
         this.angleSpeed = angleSpeed;
         this.angle = angle;
+        this.size = size;
         this.color = color;
         this.direction = DIRECTION.FORWARD;
         this.positions = [];
+        this.alive = true;
     }
 
     update () {
