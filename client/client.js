@@ -6,55 +6,30 @@ var canvas;
 let establishConnection = function() {
   if (connected) return;
 
-<<<<<<< HEAD
-  let url = document.getElementById("inputUrl").value;
-  let id = document.getElementById("inputID").value;
-  console.log(id);
-=======
     let url = document.getElementById("inputUrl").value
     let port = document.getElementById("inputID").value;
     console.log(port);
     
-    //ws = new WebSocket("ws://" + url + ":7000/" + id);
     ws = new WebSocket("ws://" + url + ":" + port);
     ws.onopen = () => {
         name = document.getElementById("inputName").value;
-        ws.send(JSON.stringify({name}));
+        ws.send(JSON.stringify({ name }));
         connected = true;
         console.log("connected");
-    }
-    ws.onclose = () => {    
+        createCanvas();
+    };
+    ws.onclose = () => {
         connected = false;
         console.log("disconnected");
-    }
+    };
     ws.onerror = e => console.log("Something went wrong:", e);
 
-    ws.onmessage = (gameData) => {
+    ws.onmessage = gameData => {
         playerData = JSON.parse(gameData.data);
-        updateCanvas(playerData)
-    }
->>>>>>> 8b136b1dd002c1ebc872be7e118762affbac2cfd
+        updateCanvas(playerData);
 
-  ws = new WebSocket("ws://" + url + ":7000/" + id);
-  ws.onopen = () => {
-    name = document.getElementById("inputName").value;
-    ws.send(JSON.stringify({ name }));
-    connected = true;
-    console.log("connected");
-    createCanvas();
-  };
-  ws.onclose = () => {
-    connected = false;
-    console.log("disconnected");
-  };
-  ws.onerror = e => console.log("Something went wrong:", e);
-
-  ws.onmessage = gameData => {
-    playerData = JSON.parse(gameData.data);
-    updateCanvas(playerData);
-
-    console.log(playerData);
-  };
+        console.log(playerData);
+    };
 };
 
 document.onkeydown = event => {
