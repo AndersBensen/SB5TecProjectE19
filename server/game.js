@@ -36,7 +36,7 @@ exports.Game = class Game {
     }
 
     playerPressKey (playerName, key) {
-        let player = getPlayer(playerName, players)
+        let player = getPlayer(playerName, this.players)
 
         if (player !== null) {
             player.changeDirection(true, key);
@@ -44,7 +44,7 @@ exports.Game = class Game {
     }
 
     playerReleaseKey (playerName, key) {
-        let player = getPlayer(playerName, players)
+        let player = getPlayer(playerName, this.players)
 
         if (player !== null) {
             player.changeDirection(false, key);
@@ -97,7 +97,7 @@ let getRandomPosition = (players) => {
 
 let getPlayer = (playerName, players) => {
     let player = null;
-    this.players.forEach(p => {
+    players.forEach(p => {
         if (p.name === playerName)
             player = p;
     });

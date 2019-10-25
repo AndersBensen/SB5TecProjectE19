@@ -6,7 +6,7 @@ exports.servers = servers = [];
 
 let clientUpdate = (wsServer, data) => {
     data = JSON.parse(data);
-    console.log(data);
+    // console.log(data);
     if (data.name !== undefined) {
         if (data.keydown !== undefined) {
             wsServer.game.playerPressKey(data.name, data.keydown);

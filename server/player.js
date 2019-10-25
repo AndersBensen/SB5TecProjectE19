@@ -31,20 +31,24 @@ exports.Player = class Player {
     }
 
     changeDirection (keyPressed, direction) {
+        console.log(this.direction);
+        
         if (keyPressed) {
-            if (player.direction !== DIRECTION.FORWARD)
-                player.direction = DIRECTION[key];
-            else if (player.direction !== DIRECTION[key])
-                player.direction = DIRECTION.FORWARD;
+            if (this.direction === DIRECTION.FORWARD)
+                this.direction = DIRECTION[direction];
+            else if (this.direction !== DIRECTION[direction])
+                this.direction = DIRECTION.FORWARD;
         } else {
-            if (player.direction !== DIRECTION.FORWARD)
-                if (DIRECTION[key] === DIRECTION.LEFT)
-                    player.direction = DIRECTION.RIGHT;
+            if (this.direction === DIRECTION.FORWARD)
+                if (DIRECTION[direction] === DIRECTION.LEFT)
+                    this.direction = DIRECTION.RIGHT;
                 else
-                    player.direction = DIRECTION.LEFT;
+                    this.direction = DIRECTION.LEFT;
             else
-                player.direction = DIRECTION.FORWARD;
+                this.direction = DIRECTION.FORWARD;
         }
+        console.log(keyPressed + " direction:" + direction + " result: " + this.direction);
+        
     }
 
 }
