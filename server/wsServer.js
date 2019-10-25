@@ -1,17 +1,18 @@
 const {Server} = require('ws');
-const game = require('./game.js');
+const {Game} = require('./game.js');
+// const game = require('./game.js');
 var exports = module.exports = {};
 
 exports.servers = servers = [];
 
-let clientUpdate = (data) => {
+let clientUpdate = (wsServer, data) => {
     data = JSON.parse(data);
     console.log(data);
     if (data.name !== undefined) {
         if (data.keydown !== undefined) {
 
         } else {
-            game.addPlayer(data.name);
+            wsServer.game.addPlayer(data.name);
         }
     }
 }
@@ -37,13 +38,16 @@ exports.newServer = function() {
         ws.on('close', () => console.log('Closing connection..'));
 
         ws.on('message', (data) => {
-            clientUpdate(data);
+            clientUpdate(wsServer, data);
         });
         ws.on('keydown', (data) => {
             console.log(data);
         });
     });
-    game.start(sendData);
+    // game.start(sendData);
+
+    wsServer.game = new Game();
+    wsServer.game.start(sendData);
 
     console.log('New server socket');
 }
