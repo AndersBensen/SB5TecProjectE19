@@ -21,9 +21,9 @@ exports.Player = class Player {
 
         // Rotate Blob
         if (this.direction == DIRECTION.LEFT)
-            this.angle -= this.angleSpeed;
-        else if (this.direction == DIRECTION.RIGHT)
             this.angle += this.angleSpeed;
+        else if (this.direction == DIRECTION.RIGHT)
+            this.angle -= this.angleSpeed;
 
         // Move Blob
         this.x += this.speed * Math.sin(this.angle * Math.PI / 180);

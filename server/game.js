@@ -24,7 +24,7 @@ exports.Game = class Game {
         if (!this.validatePlayer(name, color)) return false;
 
         let startPosition = getRandomPosition(this.players);
-        let speed = 0.5;
+        let speed = 1.5;
         let angleSpeed = 3;
         let angle = Math.random() * 360;
         let size = 5;
