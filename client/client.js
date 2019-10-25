@@ -28,7 +28,7 @@ let establishConnection = function() {
         playerData = JSON.parse(gameData.data);
         updateCanvas(playerData);
 
-        console.log(playerData);
+        // console.log(playerData);
     };
 };
 
@@ -86,7 +86,7 @@ let updateCanvas = playerData => {
     ctx.fillStyle = player.color;
 
     points.forEach(point => {
-      ctx.fillRect(point.x, point.y, 10, 10);
+      ctx.fillRect(point.x, point.y, player.size, player.size);
     });
   });
 };
