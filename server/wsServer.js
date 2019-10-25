@@ -9,7 +9,9 @@ let clientUpdate = (wsServer, data) => {
     console.log(data);
     if (data.name !== undefined) {
         if (data.keydown !== undefined) {
-
+            wsServer.game.playerPressKey(data.name, data.keydown);
+        } else if(data.keyup !== undefined) {
+            wsServer.game.playerReleaseKey(data.name, data.keyup);
         } else {
             wsServer.game.addPlayer(data.name);
         }
