@@ -35,6 +35,14 @@ exports.Game = class Game {
         return true;
     }
 
+    playerPressKey (playerName, key) {
+
+    }
+
+    playerReleaseKey (playerName, key) {
+        
+    }
+
     update () {
         if (!this.started || this.players.length === 0) return;
         
