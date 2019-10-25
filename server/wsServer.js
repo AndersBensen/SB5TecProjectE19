@@ -1,6 +1,5 @@
 const {Server} = require('ws');
 const {Game} = require('./game.js');
-// const game = require('./game.js');
 var exports = module.exports = {};
 
 exports.servers = servers = [];
@@ -17,22 +16,20 @@ let clientUpdate = (wsServer, data) => {
     }
 }
 
-let sendData = (gameData) => {
+let sendData = (gamePort, gameData) => {
     for(let i = 0; i < servers.length; i++) {
-        servers[i].clients.forEach(c => c.send(JSON.stringify(gameData)));
+        let server = servers[i];
+        if (gamePort === server["options"]["port"]) {
+            server.clients.forEach(c => c.send(JSON.stringify(gameData)));
+        }
     }
-    //servers[0].clients.forEach(c => c.send(JSON.stringify(gameData)));
-    //servers[0].client.send(JSON.stringify(gameData));
 }
 
 exports.newServer = function() {
-    // let id = 'asdf';
-    // let wsServer = new Server({port: 7000, path: '/' + id});
     let port = makeNewPort();
     console.log(port);
     let wsServer = new Server({port: port});
     servers.push(wsServer);
-    //wsServer.clients.forEach(c => c.send(JSON.stringify({port: port})));
 
     wsServer.on('connection', (ws) => {
         ws.on('close', () => console.log('Closing connection..'));
@@ -44,9 +41,8 @@ exports.newServer = function() {
             console.log(data);
         });
     });
-    // game.start(sendData);
 
-    wsServer.game = new Game();
+    wsServer.game = new Game(port);
     wsServer.game.start(sendData);
 
     console.log('New server socket');

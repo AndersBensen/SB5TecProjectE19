@@ -1,16 +1,13 @@
 const {Player, Point, COLOR} = require('./player.js');
 var exports = module.exports = {};
 
-let sendDataMethod;
-let started = false;
-let players = [];
-
 const WIDTH = 800;
 const HEIGHT = 350;
 const SPAWN_MARGIN = 20;
 
 exports.Game = class Game {
-    constructor () {
+    constructor (port) {
+        this.port = port;
         this.sendDataMethod;
         this.started = false;
         this.players = [];
@@ -26,7 +23,7 @@ exports.Game = class Game {
     addPlayer (name, color) {
         if (!this.validatePlayer(name, color)) return false;
 
-        let startPosition = getRandomPosition();
+        let startPosition = getRandomPosition(this.players);
         let speed = 0.5;
         let angleSpeed = 3;
         let angle = Math.random() * 360;
@@ -39,13 +36,13 @@ exports.Game = class Game {
     }
 
     update () {
-        if (!this.started) return;
+        if (!this.started || this.players.length === 0) return;
+        
         this.players.forEach((player) => {
             player.update();
-            console.log("X: " + Math.round(player.x) + " Y: " + Math.round(player.y));
         });
     
-        this.sendDataMethod(this.players);
+        this.sendDataMethod(this.port, this.players);
     }
 
     validatePlayer (name, color) {
@@ -61,18 +58,7 @@ exports.Game = class Game {
     getGameHeight () { return HEIGHT;}
 }
 
-exports.addPlayer = (name) => {
-    players.push(new Player(name, 100, 50, 0.5, 3, 90, COLOR.RED));
-};
-
-exports.start = (_sendDataMethod) => {
-    if (started) return;
-    sendDataMethod = _sendDataMethod;
-    setInterval(update, 1000/24);
-    started = true;
-}
-
-let getRandomPosition = () => {
+let getRandomPosition = (players) => {
     let x, y;
     let collision = false;
 
@@ -91,13 +77,4 @@ let getRandomPosition = () => {
     } while (collision === true);
 
     return new Point(x, y);
-}
-
-let update = () => {
-    players.forEach((player) => {
-        player.update();
-        console.log("X:" + player.x);
-    });
-
-    sendDataMethod(players);
 }
