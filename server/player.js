@@ -30,8 +30,21 @@ exports.Player = class Player {
         this.y += this.speed * Math.cos(this.angle * Math.PI / 180);
     }
 
-    changeDirection (direction) {
-        this.direction = direction;
+    changeDirection (keyPressed, direction) {
+        if (keyPressed) {
+            if (player.direction !== DIRECTION.FORWARD)
+                player.direction = DIRECTION[key];
+            else if (player.direction !== DIRECTION[key])
+                player.direction = DIRECTION.FORWARD;
+        } else {
+            if (player.direction !== DIRECTION.FORWARD)
+                if (DIRECTION[key] === DIRECTION.LEFT)
+                    player.direction = DIRECTION.RIGHT;
+                else
+                    player.direction = DIRECTION.LEFT;
+            else
+                player.direction = DIRECTION.FORWARD;
+        }
     }
 
 }

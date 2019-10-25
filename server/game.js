@@ -1,4 +1,4 @@
-const {Player, Point, COLOR} = require('./player.js');
+const {Player, Point, COLOR, DIRECTION} = require('./player.js');
 var exports = module.exports = {};
 
 const WIDTH = 800;
@@ -36,11 +36,19 @@ exports.Game = class Game {
     }
 
     playerPressKey (playerName, key) {
+        let player = getPlayer(playerName, players)
 
+        if (player !== null) {
+            player.changeDirection(true, key);
+        }
     }
 
     playerReleaseKey (playerName, key) {
-        
+        let player = getPlayer(playerName, players)
+
+        if (player !== null) {
+            player.changeDirection(false, key);
+        }
     }
 
     update () {
@@ -85,4 +93,14 @@ let getRandomPosition = (players) => {
     } while (collision === true);
 
     return new Point(x, y);
+}
+
+let getPlayer = (playerName, players) => {
+    let player = null;
+    this.players.forEach(p => {
+        if (p.name === playerName)
+            player = p;
+    });
+
+    return player;
 }
