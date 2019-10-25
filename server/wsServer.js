@@ -29,6 +29,10 @@ let sendData = (gamePort, gameData) => {
 
 exports.newServer = function() {
     let port = makeNewPort();
+    if (port == null) {
+        console.log("No more ports, unable to make new server.");
+        return; 
+    }
     console.log(port);
     let wsServer = new Server({port: port});
     servers.push(wsServer);
