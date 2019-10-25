@@ -1,4 +1,4 @@
-let wsServer = require('./wsServer.js');
+let wsServer = require('./server/wsServer.js');
 
 const express = require('express');
 const path = require('path');
