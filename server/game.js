@@ -1,10 +1,15 @@
+const {Player, COLOR} = require('./player.js');
 var exports = module.exports = {};
 let sendDataMethod;
 let started = false;
 let players = [];
 
+exports.Game = class Game {
+    
+}
+
 exports.addPlayer = (name) => {
-    players.push({name: name, x: 100, y: 100, angle: 0, direction: ""});
+    players.push(new Player(name, 100, 50, 0.5, 3, 90, COLOR.RED));
 };
 
 exports.start = (_sendDataMethod) => {
@@ -16,7 +21,7 @@ exports.start = (_sendDataMethod) => {
 
 let update = () => {
     players.forEach((player) => {
-        player.x += 5/24;
+        player.update();
         console.log("X:" + player.x);
     });
 
