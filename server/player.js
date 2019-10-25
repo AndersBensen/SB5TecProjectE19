@@ -42,12 +42,12 @@ exports.Point = Point = class Point {
 }
 
 exports.COLOR = COLOR = {
-    RED: 0xFF0000,
-    BLUE: 0x0000FF,
-    GREEN: 0x00FF00,
-    YELLOW: 0x00FFFF,
-    PURPLE: 0xFF00FF,
-    ORANGE: 0xFFFF00
+    RED: '#FF0000',
+    BLUE: '#0000FF',
+    GREEN: '#00FF00',
+    YELLOW: '#00FFFF',
+    PURPLE: '#FF00FF',
+    ORANGE: '#FFFF00'
 }
 
 exports.DIRECTION = DIRECTION = {
