@@ -8,17 +8,15 @@
     <script src="client.js"></script>
     <link rel="stylesheet" href="styles.css">
     <title>Blob Attack</title>
-
 </head>
 
 <body>
 
     <h1>Blob Attack</h1>
     <h2>Servers</h2>
-    <form method="get" action="/new-server">
-        <input type="submit" value="New server">
-    </form>
-
+    <button onclick="newServer()">New Server</button>
+    <p id="serverPort"></p>
+    
     <hr>
 
     <h2>Game</h2>

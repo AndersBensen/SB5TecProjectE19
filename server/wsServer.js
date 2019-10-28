@@ -52,6 +52,8 @@ exports.newServer = function() {
     wsServer.game.start(sendData);
 
     console.log('New server socket');
+
+    return port;
 }
 
 let makeNewPort = () => {

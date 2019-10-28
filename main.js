@@ -12,8 +12,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/new-server', (req, res) => {
-    wsServer.newServer();
-    res.redirect("/");
+    let serverPort = wsServer.newServer();
+    res.json({port: serverPort});
+    // res.redirect("/");
 });
 
 app.get('/get-servers', (req, res) => {
