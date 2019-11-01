@@ -4,6 +4,7 @@ var exports = module.exports = {};
 const WIDTH = 800;
 const HEIGHT = 350;
 const SPAWN_MARGIN = 20;
+const FRAME_RATE = 24;
 
 exports.Game = class Game {
     constructor (port) {
@@ -16,7 +17,7 @@ exports.Game = class Game {
     start (_sendDataMethod) {
         if (this.started) return;
         this.sendDataMethod = _sendDataMethod;
-        setInterval(this.update.bind(this), 1000/24);
+        setInterval(this.update.bind(this), 1000 / FRAME_RATE);
         this.started = true;
     }
 
@@ -55,9 +56,47 @@ exports.Game = class Game {
         if (!this.started || this.players.length === 0) return;
         
         this.players.forEach((player) => {
-            player.update();
+            if (player.alive)
+                player.update();
         });
     
+        this.players.forEach( targetPlayer => {
+            if (!targetPlayer.alive)
+                return;
+            
+            let targetName = targetPlayer.name;
+            let targetRadius = targetPlayer.size;
+
+            this.players.forEach( enemyPlayer => {
+                let enemyName = enemyPlayer.name;
+                
+                let enemyPositions = enemyPlayer.positions.slice();
+                if (enemyPositions === undefined)       // No positions
+                    return;
+                
+                if (targetName === enemyName)           // Delete own x positions
+                {
+                    let positionsToRemove = Math.ceil(targetRadius / targetPlayer.speed);
+                    
+                    positionsToRemove = positionsToRemove > enemyPositions.length ? 
+                        enemyPositions.length : positionsToRemove;
+                    
+                    enemyPositions.splice(- positionsToRemove, positionsToRemove);
+                }
+
+                if (enemyPositions.length === 0)        // Check if any positions to collide with
+                    return;
+
+                enemyPositions.forEach( position => {
+                    if (targetRadius > getDistance(targetPlayer, position))
+                    {
+                        targetPlayer.alive = false;
+                        console.log(targetPlayer.name + " died");
+                    }
+                });
+            });
+        });
+
         this.sendDataMethod(this.port, this.players);
     }
 
@@ -85,7 +124,7 @@ let getRandomPosition = (players) => {
         players.forEach(player => {
             let xDiff = player.x - x;
             let yDiff = player.y - y;
-            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff)
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 
             if (distance < player.size)
                 collision = true;
@@ -103,4 +142,12 @@ let getPlayer = (playerName, players) => {
     });
 
     return player;
+}
+
+let getDistance = (player, targetPoint) => {
+    let xDiff = player.x - targetPoint.x;
+    let yDiff = player.y - targetPoint.y;
+    let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+    return distance;
 }
