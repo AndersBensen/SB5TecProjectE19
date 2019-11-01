@@ -7,7 +7,7 @@ const port = 8000;
 
 app.use(express.static(path.join(__dirname, 'client')));
 
-app.get('/', (req, res) => {git 
+app.get('/', (req, res) => {
     res.redirect('client.html');
 });
 
