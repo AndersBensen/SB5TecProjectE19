@@ -56,6 +56,17 @@ exports.newServer = function() {
     return port;
 }
 
+exports.getAmountOfPlayers = function(gamePort) {
+    for(let i = 0; i < servers.length; i++) {
+        let server = servers[i]; 
+        if (gamePort = server['options']['port']){
+            console.log("node: amount of players: " + this.servers[i]['game']['players'].length);
+            return this.servers[i]['game']['players'].length;
+        }
+    } 
+    return 0; 
+}
+
 let makeNewPort = () => {
     let port = 7000; 
     let maxPort = 7999;  
