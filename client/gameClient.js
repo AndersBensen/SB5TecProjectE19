@@ -4,33 +4,43 @@ let name;
 var canvas;
 
 let establishConnection = function() {
-  if (connected) return;
+    if (connected) return;
+    let port = document.getElementById("inputID").value;
+    getAmountOfPlayers(port);
+};
 
+let initializeWebSocket = function(amountOfPlayers) {
     let url = document.getElementById("inputUrl").value
     let port = document.getElementById("inputID").value;
     console.log(port);
-    
-    ws = new WebSocket("ws://" + url + ":" + port);
-    ws.onopen = () => {
-        name = document.getElementById("inputName").value;
-        ws.send(JSON.stringify({ name }));
-        connected = true;
-        console.log("connected");
-        createCanvas();
-    };
-    ws.onclose = () => {
-        connected = false;
-        console.log("disconnected");
-    };
-    ws.onerror = e => console.log("Something went wrong:", e);
+    console.log(amountOfPlayers);
 
-    ws.onmessage = gameData => {
-        playerData = JSON.parse(gameData.data);
-        updateCanvas(playerData);
+    if (amountOfPlayers > 3) {
+        document.getElementById("errmsg").innerHTML = "The max amount of players: " + amountOfPlayers + ", has been reached, join a new game or make your own.";
+    } else {
+        ws = new WebSocket("ws://" + url + ":" + port);
+        ws.onopen = () => {
+            name = document.getElementById("inputName").value;
+            ws.send(JSON.stringify({ name }));
+            connected = true;
+            console.log("connected");
+            createCanvas();
+        };
+        ws.onclose = () => {
+            connected = false;
+            console.log("disconnected");
+        };
+        ws.onerror = e => console.log("Something went wrong:", e);
 
-        // console.log(playerData);
-    };
-};
+        ws.onmessage = gameData => {
+            playerData = JSON.parse(gameData.data);
+            updateCanvas(playerData);
+
+            // console.log(playerData);
+        };
+    }
+}
+
 
 document.onkeydown = event => {
   if (!connected) return;
@@ -90,3 +100,18 @@ let updateCanvas = playerData => {
     });
   });
 };
+
+let getAmountOfPlayers = function(port) {
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            let amountOfPlayers = JSON.parse(xmlHttp.responseText).amount;
+            if (amountOfPlayers !== undefined) {
+                console.log("client: amount of players: " + amountOfPlayers);
+                initializeWebSocket(amountOfPlayers);
+            } 
+        }
+    }
+    xmlHttp.open("GET", "/get-amount-of-players", true); // true for asynchronous 
+    xmlHttp.send(port);
+}
