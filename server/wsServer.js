@@ -56,15 +56,14 @@ exports.newServer = function() {
     return port;
 }
 
-exports.getAmountOfPlayers = function(gamePort) {
+exports.getGame = function(gamePort) {
     for(let i = 0; i < servers.length; i++) {
         let server = servers[i]; 
         if (gamePort = server['options']['port']){
-            console.log("node: amount of players: " + this.servers[i]['game']['players'].length);
-            return this.servers[i]['game']['players'].length;
+            return this.servers[i]['game'];
         }
     } 
-    return 0; 
+    return null; 
 }
 
 let makeNewPort = () => {

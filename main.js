@@ -17,9 +17,12 @@ app.get('/new-server', (req, res) => {
     // res.redirect("/");
 });
 
-app.get('/get-amount-of-players', (req, res) => {
-    let amountOfPlayers = wsServer.getAmountOfPlayers(req);
-    res.json({amount: amountOfPlayers});
+app.get('/get-game', (req, res) => {
+    let arr = [];
+    arr = wsServer.getGame(req);
+    // console.log("game arr: ");
+    // console.log(arr);
+    res.json({playerArr: arr});
 });
 
 app.get('/get-servers', (req, res) => {

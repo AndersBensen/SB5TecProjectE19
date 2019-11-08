@@ -6,14 +6,15 @@ var canvas;
 let establishConnection = function() {
     if (connected) return;
     let port = document.getElementById("inputID").value;
-    getAmountOfPlayers(port);
+    getGame(port);
 };
 
-let initializeWebSocket = function(amountOfPlayers) {
+let initializeWebSocket = function(game) {
     let url = document.getElementById("inputUrl").value
     let port = document.getElementById("inputID").value;
+    amountOfPlayers = game['players'].length;
     console.log(port);
-    console.log(amountOfPlayers);
+    console.log("player amount: " + amountOfPlayers);
 
     if (amountOfPlayers > 3) {
         document.getElementById("errmsg").innerHTML = "The max amount of players: " + amountOfPlayers + ", has been reached, join a new game or make your own.";
@@ -101,17 +102,32 @@ let updateCanvas = playerData => {
   });
 };
 
-let getAmountOfPlayers = function(port) {
+let getGame = function(port) {
     let xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            let amountOfPlayers = JSON.parse(xmlHttp.responseText).amount;
-            if (amountOfPlayers !== undefined) {
-                console.log("client: amount of players: " + amountOfPlayers);
-                initializeWebSocket(amountOfPlayers);
+            let gameArr = [];
+            gameArr = JSON.parse(xmlHttp.responseText).playerArr;
+            if (gameArr !== undefined) {
+                initializeWebSocket(gameArr);
             } 
         }
     }
-    xmlHttp.open("GET", "/get-amount-of-players", true); // true for asynchronous 
+    xmlHttp.open("GET", "/get-game", true); // true for asynchronous 
+    xmlHttp.send(port);
+}
+
+let updateGameInfo = function(port) {
+  let xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            let gameArr = [];
+            gameArr = JSON.parse(xmlHttp.responseText).playerArr;
+            if (gameArr !== undefined) {
+              //do something
+            } 
+        }
+    }
+    xmlHttp.open("GET", "/get-game", true); // true for asynchronous 
     xmlHttp.send(port);
 }
