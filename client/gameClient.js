@@ -91,6 +91,8 @@ let createCanvas = () => {
   canvas.width = 800;
   canvas.height = 350;
   canvas.context = canvas.getContext("2d");
+  canvas.context.shadowBlur = 10;
+  canvas.context.shadowColor = "black";
   document.body.insertBefore(canvas, document.getElementById("empty"));
 
   canvas.clear = () => {
