@@ -49,7 +49,7 @@ exports.Player = class Player {
         if (keyPressed && this.direction === DIRECTION[direction])
             return;
         
-        console.log(this.direction);
+        // console.log(this.direction);
         
         if (keyPressed) {
             if (this.direction === DIRECTION.FORWARD)

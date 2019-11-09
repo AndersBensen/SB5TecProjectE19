@@ -13,8 +13,8 @@ let initializeWebSocket = function(game) {
   let url = document.getElementById("inputUrl").value;
   let port = document.getElementById("inputID").value;
   amountOfPlayers = game["players"].length;
-  console.log(port);
-  console.log("player amount: " + amountOfPlayers);
+  // console.log("player amount: " + amountOfPlayers);
+  
 
   if (amountOfPlayers > 3) {
     document.getElementById("errmsg").innerHTML =
@@ -46,8 +46,8 @@ let initializeWebSocket = function(game) {
       playerColor.innerHTML = "";
 
       playerData.forEach(player => {
-        name = player.name;
-        color = player.color;
+        let name = player.name;
+        let color = player.color;
         div.innerHTML += `<span style="color: ${color};"> ${name} </span> <br>`;
       });
     };
@@ -67,7 +67,7 @@ document.onkeydown = event => {
     case " ":
       ws.send(JSON.stringify({ name, keydown: "SPACE" }));
     default:
-      console.log("Not a valid key");
+      // console.log("Not a valid key");
   }
 };
 
@@ -82,7 +82,7 @@ document.onkeyup = event => {
       ws.send(JSON.stringify({ name, keyup: "RIGHT" }));
       break;
     default:
-      console.log("Not a valid key");
+      // console.log("Not a valid key");
   }
 };
 
@@ -110,7 +110,9 @@ let updateCanvas = playerData => {
     ctx.fillStyle = player.color;
 
     points.forEach(point => {
-      ctx.fillRect(point.x, point.y, player.size, player.size);
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, player.size / 2, 0, 2 * Math.PI);
+      ctx.fill();
     });
   });
 };
@@ -120,27 +122,12 @@ let getGame = function(port) {
   xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
       let gameArr = [];
-      gameArr = JSON.parse(xmlHttp.responseText).playerArr;
+      gameArr = JSON.parse(xmlHttp.responseText).gameInfo;
       if (gameArr !== undefined) {
         initializeWebSocket(gameArr);
       }
     }
   };
-  xmlHttp.open("GET", "/get-game", true); // true for asynchronous
-  xmlHttp.send(port);
-};
-
-let updateGameInfo = function(port) {
-  let xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-      let gameArr = [];
-      gameArr = JSON.parse(xmlHttp.responseText).playerArr;
-      if (gameArr !== undefined) {
-        //do something
-      }
-    }
-  };
-  xmlHttp.open("GET", "/get-game", true); // true for asynchronous
-  xmlHttp.send(port);
+  xmlHttp.open("GET", "/get-game?port=" + port, true); // true for asynchronous
+  xmlHttp.send();
 };

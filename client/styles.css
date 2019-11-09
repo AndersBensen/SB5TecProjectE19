@@ -19,7 +19,7 @@ canvas {
     position: absolute;
     background: #fff;
     border: 1px solid #aaa;
-    border-radius: 5px;
+    /* border-radius: 5px; */
     width: 72%;
     height: 56%;
     left: 14%;

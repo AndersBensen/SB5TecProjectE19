@@ -18,16 +18,12 @@ app.get('/new-server', (req, res) => {
 });
 
 app.get('/get-game', (req, res) => {
-    let arr = [];
-    arr = wsServer.getGame(req);
-    // console.log("game arr: ");
-    // console.log(arr);
-    res.json({playerArr: arr});
+    let arr = wsServer.getGame(req.query.port);
+    res.json({gameInfo: arr});
 });
 
 app.get('/get-servers', (req, res) => {
     res.redirect("/");
-    console.log(wsServer.servers);
     return JSON.stringify(wsServer.servers);
 });
 

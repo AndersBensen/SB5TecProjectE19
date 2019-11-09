@@ -33,7 +33,7 @@ exports.newServer = function() {
         console.log("No more ports, unable to make new server.");
         return; 
     }
-    
+
     let wsServer = new Server({port: port});
     servers.push(wsServer);
 
@@ -57,12 +57,12 @@ exports.newServer = function() {
 
 exports.getGame = function(gamePort) {
     for(let i = 0; i < servers.length; i++) {
-        let server = servers[i]; 
-        if (gamePort = server['options']['port']){
+        let server = servers[i];
+        if (gamePort == server.options.port){
             return this.servers[i]['game'];
         }
     } 
-    return null; 
+    return null;
 }
 
 let makeNewPort = () => {

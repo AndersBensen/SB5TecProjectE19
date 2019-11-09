@@ -4,7 +4,7 @@ var exports = module.exports = {};
 const WIDTH = 800;
 const HEIGHT = 350;
 const SPAWN_MARGIN = 20;
-const FRAME_RATE = 24;
+const FRAME_RATE = 10;
 
 exports.Game = class Game {
     constructor (port, _sendDataMethod) {
@@ -30,21 +30,26 @@ exports.Game = class Game {
             return false;
 
         let startPosition = getRandomPosition(this.players);
-        let speed = 1.5;
-        let angleSpeed = 3;
+        let speed = 36 / FRAME_RATE;
+        let angleSpeed = 72 / FRAME_RATE;
         let angle = Math.random() * 360;
-        let size = 5;
+        let size = 10;
 
         let color = getRandomColor(this.players);
 
         this.players.push(new Player(name, startPosition.x, startPosition.y, 
             speed, angleSpeed, angle, size, color, FRAME_RATE));
         
+
+        this.sendDataMethod(this.port, this.players);
+
+        console.log("Added " + this.players[this.players.length - 1].name);
+        
         return true;
     }
 
     playerPressKey (playerName, key) {
-        let player = getPlayer(playerName, this.players)
+        let player = getPlayer(playerName, this.players);
         
         if (key === "SPACE") {
             this.start();
@@ -54,7 +59,7 @@ exports.Game = class Game {
     }
 
     playerReleaseKey (playerName, key) {
-        let player = getPlayer(playerName, this.players)
+        let player = getPlayer(playerName, this.players);
         
         if (player !== null) {
             player.changeDirection(false, key);
@@ -163,8 +168,8 @@ let checkCollision = (players) => {
         let targetRadius = targetPlayer.size;
 
         // Out of bounds
-        if (targetPlayer.x < 0 || targetPlayer.x > WIDTH - targetRadius ||
-            targetPlayer.y < 0 || targetPlayer.y > HEIGHT - targetRadius) {
+        if (targetPlayer.x < targetRadius / 2 || targetPlayer.x > WIDTH - targetRadius / 2 ||
+            targetPlayer.y < targetRadius / 2 || targetPlayer.y > HEIGHT - targetRadius / 2) {
             killPlayer(targetPlayer);
             return;
         }
