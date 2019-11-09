@@ -7,22 +7,27 @@ const SPAWN_MARGIN = 20;
 const FRAME_RATE = 24;
 
 exports.Game = class Game {
-    constructor (port) {
+    constructor (port, _sendDataMethod) {
         this.port = port;
+        this.sendDataMethod = _sendDataMethod;
         this.sendDataMethod;
         this.started = false;
         this.players = [];
     }
 
-    start (_sendDataMethod) {
-        if (this.started) return;
-        this.sendDataMethod = _sendDataMethod;
+    start () {
+        if (this.started)
+            return;
+        
         setInterval(this.update.bind(this), 1000 / FRAME_RATE);
         this.started = true;
+
+        console.log("Game startet on port " + this.port);
     }
 
-    addPlayer (name, color) {
-        if (!this.validatePlayer(name, color)) return false;
+    addPlayer (name) {
+        if (!this.validatePlayer(name))
+            return false;
 
         let startPosition = getRandomPosition(this.players);
         let speed = 1.5;
@@ -30,23 +35,27 @@ exports.Game = class Game {
         let angle = Math.random() * 360;
         let size = 5;
 
+        let color = getRandomColor(this.players);
+
         this.players.push(new Player(name, startPosition.x, startPosition.y, 
-            speed, angleSpeed, angle, size, color));
+            speed, angleSpeed, angle, size, color, FRAME_RATE));
         
         return true;
     }
 
     playerPressKey (playerName, key) {
         let player = getPlayer(playerName, this.players)
-
-        if (player !== null) {
+        
+        if (key === "SPACE") {
+            this.start();
+        } else if (player !== null) {
             player.changeDirection(true, key);
         }
     }
 
     playerReleaseKey (playerName, key) {
         let player = getPlayer(playerName, this.players)
-
+        
         if (player !== null) {
             player.changeDirection(false, key);
         }
@@ -55,54 +64,26 @@ exports.Game = class Game {
     update () {
         if (!this.started || this.players.length === 0) return;
         
+        if (checkGameEnded(this.players)) {
+            this.started = false;
+            // this.sendDataMethod(this.port, this);
+            console.log("Game (" + this.port + ") ended");
+            return;
+        }
+
         this.players.forEach((player) => {
             if (player.alive)
                 player.update();
         });
     
-        this.players.forEach( targetPlayer => {
-            if (!targetPlayer.alive)
-                return;
-            
-            let targetName = targetPlayer.name;
-            let targetRadius = targetPlayer.size;
-
-            this.players.forEach( enemyPlayer => {
-                let enemyName = enemyPlayer.name;
-                
-                let enemyPositions = enemyPlayer.positions.slice();
-                if (enemyPositions === undefined)       // No positions
-                    return;
-                
-                if (targetName === enemyName)           // Delete own x positions
-                {
-                    let positionsToRemove = Math.ceil(targetRadius / targetPlayer.speed);
-                    
-                    positionsToRemove = positionsToRemove > enemyPositions.length ? 
-                        enemyPositions.length : positionsToRemove;
-                    
-                    enemyPositions.splice(- positionsToRemove, positionsToRemove);
-                }
-
-                if (enemyPositions.length === 0)        // Check if any positions to collide with
-                    return;
-
-                enemyPositions.forEach( position => {
-                    if (targetRadius > getDistance(targetPlayer, position))
-                    {
-                        targetPlayer.alive = false;
-                        console.log(targetPlayer.name + " died");
-                    }
-                });
-            });
-        });
+        checkCollision(this.players);
 
         this.sendDataMethod(this.port, this.players);
     }
 
     validatePlayer (name, color) {
         this.players.forEach(player => {
-            if (player.name === name || player.color === color)
+            if (player.name === name && player.color === color)
                 return false;
         })
 
@@ -134,6 +115,24 @@ let getRandomPosition = (players) => {
     return new Point(x, y);
 }
 
+let getRandomColor = (players) => {
+    let colors, index;
+    let color = undefined;
+
+    do {
+        colors = Object.keys( COLOR );
+        index = Math.floor(Math.random() * colors.length);
+        color = COLOR[colors[index]];
+        
+        players.forEach( player => {
+            if (player.color === color)
+                color = undefined;
+        });
+    } while (color === undefined)
+
+    return color;
+}
+
 let getPlayer = (playerName, players) => {
     let player = null;
     players.forEach(p => {
@@ -142,6 +141,74 @@ let getPlayer = (playerName, players) => {
     });
 
     return player;
+}
+
+let checkGameEnded = (players) => {
+    let ended = true;
+
+    players.forEach( player => {
+        if (player.alive)
+            ended = false;
+    });
+
+    return ended;
+}
+
+let checkCollision = (players) => {
+    players.forEach( targetPlayer => {
+        if (!targetPlayer.alive)
+            return;
+        
+        let targetName = targetPlayer.name;
+        let targetRadius = targetPlayer.size;
+
+        // Out of bounds
+        if (targetPlayer.x < 0 || targetPlayer.x > WIDTH - targetRadius ||
+            targetPlayer.y < 0 || targetPlayer.y > HEIGHT - targetRadius) {
+            killPlayer(targetPlayer);
+            return;
+        }
+
+        // Collision with enemies
+        players.forEach( enemyPlayer => {
+            if (!targetPlayer.alive)
+                return;
+            
+            let enemyName = enemyPlayer.name;
+            
+            let enemyPositions = enemyPlayer.positions.slice();
+            if (enemyPositions === undefined)       // No positions
+                return;
+            
+            if (targetName === enemyName)           // Delete own x positions
+            {
+                let positionsToRemove = Math.ceil(targetRadius / targetPlayer.speed);
+                
+                positionsToRemove = positionsToRemove > enemyPositions.length ? 
+                    enemyPositions.length : positionsToRemove;
+                
+                enemyPositions.splice(- positionsToRemove, positionsToRemove);
+            }
+
+            if (enemyPositions.length === 0)        // Check if any positions to collide with
+                return;
+
+            enemyPositions.forEach( position => {
+                if (!targetPlayer.alive)
+                    return;
+                
+                if (targetRadius > getDistance(targetPlayer, position))
+                {
+                    killPlayer(targetPlayer);
+                }
+            });
+        });
+    });
+}
+
+let killPlayer = (player) => {
+    player.alive = false;
+    console.log(player.name + " died x: " + player.x + " y: " + player.y);
 }
 
 let getDistance = (player, targetPoint) => {

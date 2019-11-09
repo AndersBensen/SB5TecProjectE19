@@ -33,7 +33,7 @@ exports.newServer = function() {
         console.log("No more ports, unable to make new server.");
         return; 
     }
-    console.log(port);
+    
     let wsServer = new Server({port: port});
     servers.push(wsServer);
 
@@ -48,10 +48,9 @@ exports.newServer = function() {
         });
     });
 
-    wsServer.game = new Game(port);
-    wsServer.game.start(sendData);
-
-    console.log('New server socket');
+    wsServer.game = new Game(port, sendData);
+    
+    console.log('New server socket on port ' + port);
 
     return port;
 }
